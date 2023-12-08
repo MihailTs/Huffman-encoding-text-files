@@ -84,5 +84,4 @@ void HuffmanEncoder::compress(){
 }
 
 void HuffmanEncoder::decompress(){
-    
 }

@@ -24,5 +24,4 @@ class HuffmanEncoder{
         void setOutputFile(std::string);
         void compress();
         void decompress();
-
 };

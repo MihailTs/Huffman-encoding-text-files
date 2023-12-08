@@ -23,6 +23,6 @@ class HuffmanEncoder{
         void setInputFile(std::string);
         void setOutputFile(std::string);
         void compress();
-        //void decompress();
+        void decompress();
 
 };

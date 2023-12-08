@@ -22,29 +22,43 @@ void HuffmanEncoder::setOutputFile(std::string _outputFile){
     outputFile = _outputFile;
 }
 
-void HuffmanEncoder::findCountOccurrences(std::fstream reader, int* countOccurrences){
+void HuffmanEncoder::findCountOfOccurrences(std::ifstream& reader, int* countOccurrences){
     std::string line;
-    while(std::getline(firstReader, line)){
-        std::cout << line << std::endl;
+    while(std::getline(reader, line)){
         for(int i = 0; i < line.size(); i++){
             countOccurrences[(int) line[i]]++;
         }
     }
 }
 
+void HuffmanEncoder::writeCompressedData(std::ifstream& reader, std::ofstream& writer, 
+                                            const std::vector<std::string>& charEncodings){
+    std::string line;
+    //read from first line and than read all other lines
+    //this way there is no new line in the end of the compressed file
+    if(std::getline(reader, line)){
+         for(int i = 0; i < line.size(); i++){
+            writer << charEncodings.at((int) line[i]);
+        }
+    }
+
+    while(std::getline(reader, line)){
+         writer << std::endl;
+        for(int i = 0; i < line.size(); i++){
+            writer << charEncodings.at((int) line[i]);
+        }
+    }                                                    
+}
+
 void HuffmanEncoder::compress(){
     //What if no output file is given
     try {
-        std::fstream firstReader(inputFile);
+        std::ifstream firstReader(inputFile);
 
         int* countOccurrences = new int[HuffmanTree::ENCODING_TABLE_SIZE];
         for(int i = 0; i < HuffmanTree::ENCODING_TABLE_SIZE; i++){
             countOccurrences[i] = 0;
         }
-
-        //
-        //new line is not encoded        
-        //
 
         findCountOfOccurrences(firstReader, countOccurrences);
 
@@ -54,29 +68,11 @@ void HuffmanEncoder::compress(){
         delete [] countOccurrences;
         firstReader.close();
 
-        //only for testing
-        for(int i = 0; i < charEncodings.size(); i++){
-            if(charEncodings.at(i) != ""){
-                std::cout << "(" << (char) i << ", " << charEncodings.at(i) << ")" << std::endl;
-            }
-        }
-
-
-
         //rereading and writing to the file        
-        
-        std::fstream secondReader(inputFile);
-        std::fstream writer(outputFile);
+        std::ifstream secondReader(inputFile);
+        std::ofstream writer(outputFile);
 
-        std::string line;
-        while(std::getline(firstReader, line)){
-            std::cout << line << std::endl;
-            for(int i = 0; i < line.size(); i++){
-                secondReader << charEncodings.at((int) line[i]);
-            }
-
-            secondReader << std::endl;
-        }        
+        writeCompressedData(secondReader, writer, charEncodings);
 
         secondReader.close();
         writer.close();

@@ -28,7 +28,7 @@ void HuffmanTree::constructTree(std::vector<Node*>& charValuePairs){
     Node* lowestPair2 = charValuePairs.back();
     charValuePairs.pop_back();
     
-    Node* newPair = new Node{' ', lowestPair1->value + lowestPair2->value, lowestPair1, lowestPair2};
+    Node* newPair = new Node{'-', lowestPair1->value + lowestPair2->value, lowestPair1, lowestPair2};
 
     if(newPair->value > charValuePairs.front()->value){
         charValuePairs.insert(charValuePairs.begin(), newPair);
@@ -84,6 +84,27 @@ void HuffmanTree::findEncodings(std::vector<std::string>& charEncodings, Node* n
 
     findEncodings(charEncodings, nodeRoot->left, currEncoding + "0");
     findEncodings(charEncodings, nodeRoot->right, currEncoding + "1");
+}
+
+std::string HuffmanTree::serialized(){
+    std::string serializationStr = "";
+    serialized(root, serializationStr);
+    return serializationStr;
+}
+
+void HuffmanTree::serialized(Node* nodeRoot, std::string& str){
+    if(nodeRoot == nullptr){
+        return;
+    }
+
+    if(nodeRoot->left == nullptr && nodeRoot->right == nullptr){
+        str = str + "'" + nodeRoot->symbol + " ";
+    } else {
+        str = str + nodeRoot->symbol + " ";
+    }
+
+    serialized(nodeRoot->left, str);
+    serialized(nodeRoot->right, str);
 }
 
 void HuffmanTree::cleanup(Node* nodeRoot){

@@ -25,6 +25,8 @@ class HuffmanTree {
 
         void constructTree(std::vector<Node*>&);
 
+        void serialized(Node*, std::string&);
+
     public:
 
         static const int ENCODING_TABLE_SIZE = 128;
@@ -33,6 +35,8 @@ class HuffmanTree {
         // HuffmanTree(const HuffmanTree&);
 
         std::vector<std::string> getCharEncodings();
+
+        std::string serialized();
 
         // bool operator=(const HuffmanTree&);
         // void copy(const HuffmanTree&);

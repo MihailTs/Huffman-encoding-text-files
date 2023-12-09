@@ -3,23 +3,32 @@
 HuffmanEncoder::HuffmanEncoder(){
     inputFile = "";
     outputFile = "";
+    inputBitSize = 0;
+    outputBitSize = 0;
 }
 
 HuffmanEncoder::HuffmanEncoder(std::string _inputFile){
     inputFile = _inputFile;
+    inputBitSize = 0;
+    outputBitSize = 0;
 }
 
 HuffmanEncoder::HuffmanEncoder(std::string _inputFile, std::string _outputFile){
     inputFile = _inputFile;
     outputFile = _outputFile;
+    inputBitSize = 0;
+    outputBitSize = 0;
 }
 
 void HuffmanEncoder::setInputFile(std::string _inputFile){
     inputFile = _inputFile;
+    inputBitSize = 0;
+    outputBitSize = 0;
 }
 
 void HuffmanEncoder::setOutputFile(std::string _outputFile){
     outputFile = _outputFile;
+    outputBitSize = 0;
 }
 
 void HuffmanEncoder::findCountOfOccurrences(std::ifstream& reader, int* countOccurrences){
@@ -27,6 +36,7 @@ void HuffmanEncoder::findCountOfOccurrences(std::ifstream& reader, int* countOcc
     while(std::getline(reader, line)){
         for(int i = 0; i < line.size(); i++){
             countOccurrences[(int) line[i]]++;
+            inputBitSize += 8;
         }
     }
 }
@@ -37,15 +47,19 @@ void HuffmanEncoder::writeCompressedData(std::ifstream& reader, std::ofstream& w
     //read from first line and than read all other lines
     //this way there is no new line in the end of the compressed file
     if(std::getline(reader, line)){
+        std::cout << line << std::endl;
          for(int i = 0; i < line.size(); i++){
             writer << charEncodings.at((int) line[i]);
+            outputBitSize += charEncodings.at((int) line[i]).size();
         }
     }
 
     while(std::getline(reader, line)){
-         writer << std::endl;
+        std::cout << line << std::endl;
+        writer << std::endl;
         for(int i = 0; i < line.size(); i++){
             writer << charEncodings.at((int) line[i]);
+            outputBitSize += charEncodings.at((int) line[i]).size();
         }
     }                                                    
 }
@@ -81,7 +95,16 @@ void HuffmanEncoder::compress(){
     catch (std::ifstream::failure e) {
         std::cout << "Exception reading/writing to file";
     }
+
+}
+
+double HuffmanEncoder::getCompressionDegree(){
+    if(inputFile == "" || outputFile == ""){
+        throw runtime_error("You must first compress the input file to see this data.");
+    }
+    return inputBitSize/outputBitSize;
 }
 
 void HuffmanEncoder::decompress(){
+
 }

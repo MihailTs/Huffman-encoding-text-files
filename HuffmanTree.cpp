@@ -138,6 +138,44 @@ void HuffmanTree::deserialized(Node*& nodeRoot, const std::string& treeDescripti
     return;
 }
 
+std::string HuffmanTree::decode(const std::string& line){
+    int currBit = 0;
+    std::string decoded = "";
+
+    Node* currNode = root;
+
+    while(currBit < line.size()){
+        if(currNode == nullptr){
+            throw std::runtime_error("A problem with the data decoding occured. The file may have been manipulated!");
+        }
+
+        std::cout << line[currBit] << "  ";
+
+        if(currNode->left == nullptr && currNode->right == nullptr){
+            decoded += currNode->symbol;
+            currNode = root;
+        } else if(line[currBit] == '0'){
+            currNode = currNode->left;
+            currBit++;
+        } else if(line[currBit] == '1'){
+            currNode = currNode->right;
+            currBit++;
+        } else {
+            throw std::runtime_error("File data is represented in the wrong format!");
+        }
+
+    }
+
+    if(currNode->left == nullptr && currNode->right == nullptr){
+        decoded += currNode->symbol;
+        currNode = root;
+    } else {
+        throw std::runtime_error("File data is represented in the wrong format!");
+    }
+
+    return decoded;
+}
+
 void HuffmanTree::cleanup(Node* nodeRoot){
     if(nodeRoot->left == nullptr && nodeRoot->right == nullptr){
         delete nodeRoot;

@@ -43,7 +43,7 @@ class HuffmanTree {
 
         std::string serialized();
 
-
+        std::string decode(const std::string&);
 
         // bool operator=(const HuffmanTree&);
         // void copy(const HuffmanTree&);

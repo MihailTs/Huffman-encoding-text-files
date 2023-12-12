@@ -149,8 +149,6 @@ std::string HuffmanTree::decode(const std::string& line){
             throw std::runtime_error("A problem with the data decoding occured. The file may have been manipulated!");
         }
 
-        std::cout << line[currBit] << "  ";
-
         if(currNode->left == nullptr && currNode->right == nullptr){
             decoded += currNode->symbol;
             currNode = root;
@@ -177,16 +175,19 @@ std::string HuffmanTree::decode(const std::string& line){
 }
 
 void HuffmanTree::cleanup(Node* nodeRoot){
-    if(nodeRoot->left == nullptr && nodeRoot->right == nullptr){
-        delete nodeRoot;
-    } else{
+    if(nodeRoot->left != nullptr){
         cleanup(nodeRoot->left);
+    } 
+    if(nodeRoot->right != nullptr){
         cleanup(nodeRoot->right);
     }
+    delete nodeRoot;    
 }
 
 void HuffmanTree::cleanup(){
-    cleanup(root);
+    if(root != nullptr){
+        cleanup(root);
+    }
 }
 
 HuffmanTree::~HuffmanTree(){

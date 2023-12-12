@@ -84,9 +84,9 @@ void HuffmanEncoder::compress(){
         std::ifstream secondReader(inputFile);
         std::ofstream writer(outputFile);
 
-        writeCompressedData(secondReader, writer, charEncodings);
+        writer << ht.serialized() << std::endl;
 
-        writer << std::endl << ht.serialized();
+        writeCompressedData(secondReader, writer, charEncodings);
 
         secondReader.close();
         writer.close();
@@ -98,37 +98,45 @@ void HuffmanEncoder::compress(){
 
 }
 
-
-
 double HuffmanEncoder::getCompressionDegree(){
     if(inputFile == "" || outputFile == ""){
         throw std::runtime_error("You must first compress the input file to see this data.");
     }
-    return inputBitSize/outputBitSize;
+    return (double) outputBitSize / inputBitSize;
 }
 
-//decompresses the inputFile to the outputFile
-// void HuffmanEncoder::decompress(){
-//     try {
-//         std::ifstream reader(inputFile);
+// decompresses the inputFile to the outputFile
+void HuffmanEncoder::decompress(){
+    try {
+        std::ifstream reader(inputFile);
+        std::ofstream writer(outputFile);
 
-//         HuffmanTree hf(countOccurrences);
-//         std::vector<std::string> charEncodings = hf.getCharEncodings();
+        std::string line;
+        
+        //at first line contains the incoding info
+        if(!std::getline(reader, line)){
+            throw std::runtime_error("The given file is empty. Unable to decompress an empty file!");
+        }
 
-//         delete [] countOccurrences;
-//         firstReader.close();
+        HuffmanTree ht;
+        ht.deserialized(line);
 
-//         //rereading and writing to the file        
-//         std::ifstream secondReader(inputFile);
-//         std::ofstream writer(outputFile);
+        if(std::getline(reader, line)){
+            writer << ht.decode(line);
+        } else {
+            return;
+        }
 
-//         writeCompressedData(secondReader, writer, charEncodings);
+        while(std::getline(reader, line)){
+            writer << std::endl;
+            writer << ht.decode(line);
+        }
+        
+        reader.close();
+        writer.close();
+    }
 
-//         secondReader.close();
-//         writer.close();
-//     }
-
-//     catch (std::ifstream::failure e) {
-//         std::cout << "Exception reading/writing to file";
-//     }
-// }
+    catch (std::ifstream::failure e) {
+        std::cout << "Exception reading/writing to file";
+    }
+}

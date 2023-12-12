@@ -21,6 +21,10 @@ HuffmanTree::HuffmanTree(int* occurrenceCounts){
     constructTree(charValuePairs);
 }
 
+HuffmanTree::HuffmanTree(const HuffmanTree& other){
+    copy(other);
+}
+
 void HuffmanTree::constructTree(std::vector<Node*>& charValuePairs){
     if(charValuePairs.size() == 1){
         root = charValuePairs.at(0);
@@ -90,6 +94,7 @@ void HuffmanTree::findEncodings(std::vector<std::string>& charEncodings, Node* n
     findEncodings(charEncodings, nodeRoot->right, currEncoding + "1");
 }
 
+//No information about the count of occurrences is kept because it won't be used
 std::string HuffmanTree::serialized(){
     std::string serializationStr = "";
     serialized(root, serializationStr);
@@ -111,6 +116,7 @@ void HuffmanTree::serialized(Node* nodeRoot, std::string& str){
     serialized(nodeRoot->right, str);
 }
 
+//In deserialization the count of occurrences of symbols is not important so we set it to 0
 void HuffmanTree::deserialized(const std::string& treeDescription){
     cleanup();
     int current = 0;
@@ -159,7 +165,7 @@ std::string HuffmanTree::decode(const std::string& line){
             currNode = currNode->right;
             currBit++;
         } else {
-            throw std::runtime_error("File data is represented in the wrong format!");
+            throw std::runtime_error("File data is represented in the wrong format or the file may have been corrupted!");
         }
 
     }
@@ -172,6 +178,24 @@ std::string HuffmanTree::decode(const std::string& line){
     }
 
     return decoded;
+}
+
+void HuffmanTree::copy(const HuffmanTree& other){
+    if(this == &other){
+        return;
+    }
+
+    copy(other.root, root);
+}
+
+void HuffmanTree::copy(Node* otherRoot, Node*& myRoot){
+    if(otherRoot == nullptr){
+        return;
+    }
+
+    myRoot = new Node{otherRoot->symbol, otherRoot->value, nullptr, nullptr};
+    copy(otherRoot->left, myRoot->left);
+    copy(otherRoot->right, myRoot->right);
 }
 
 void HuffmanTree::cleanup(Node* nodeRoot){
@@ -188,6 +212,16 @@ void HuffmanTree::cleanup(){
     if(root != nullptr){
         cleanup(root);
     }
+}
+
+HuffmanTree& HuffmanTree::operator=(const HuffmanTree& other){
+    if(this == &other){
+        return *this;
+    }
+
+    cleanup();
+    copy(other);
+    return *this;
 }
 
 HuffmanTree::~HuffmanTree(){

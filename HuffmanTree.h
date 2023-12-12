@@ -21,6 +21,8 @@ class HuffmanTree {
 
         void cleanup(Node*);
 
+        void copy(Node*, Node*&);
+
         void constructTree(std::vector<Node*>&);
 
         void printLeafes(Node*);
@@ -35,7 +37,7 @@ class HuffmanTree {
 
         HuffmanTree();
         HuffmanTree(int*);
-        // HuffmanTree(const HuffmanTree&);
+        HuffmanTree(const HuffmanTree&);
 
         std::vector<std::string> getCharEncodings();
 
@@ -45,8 +47,8 @@ class HuffmanTree {
 
         std::string decode(const std::string&);
 
-        // bool operator=(const HuffmanTree&);
-        // void copy(const HuffmanTree&);
+        HuffmanTree& operator=(const HuffmanTree&);
+        void copy(const HuffmanTree&);
         void cleanup();
         ~HuffmanTree();
 

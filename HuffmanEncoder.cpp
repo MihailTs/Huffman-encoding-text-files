@@ -63,10 +63,10 @@ void HuffmanEncoder::writeCompressedData(std::ifstream& reader, std::ofstream& w
 }
 
 void HuffmanEncoder::compress(){
-    //What if no output file is given
     try {
         std::ifstream firstReader(inputFile);
-
+        std::ofstream writer(outputFile);
+        
         int* countOccurrences = new int[HuffmanTree::ENCODING_TABLE_SIZE];
         for(int i = 0; i < HuffmanTree::ENCODING_TABLE_SIZE; i++){
             countOccurrences[i] = 0;
@@ -74,28 +74,38 @@ void HuffmanEncoder::compress(){
 
         findCountOfOccurrences(firstReader, countOccurrences);
 
+        bool isEmptyFile = true;
+        for(int i = 0; i < HuffmanTree::ENCODING_TABLE_SIZE; i++){
+            if(countOccurrences[i] > 0){
+                isEmptyFile = false;
+                break;
+            }
+        }
+
+        //checking if the given file is empty. If yes -> emptying the output file
+        if(isEmptyFile){
+            writer.close();
+            firstReader.close();
+            delete []countOccurrences;
+            return;
+        }
+
         HuffmanTree ht(countOccurrences);
         std::vector<std::string> charEncodings = ht.getCharEncodings();
 
-        delete [] countOccurrences;
+        delete []countOccurrences;
         firstReader.close();
 
-        //rereading and writing to the file        
         std::ifstream secondReader(inputFile);
-        std::ofstream writer(outputFile);
 
         writer << ht.serialized() << std::endl;
-
         writeCompressedData(secondReader, writer, charEncodings);
 
         secondReader.close();
         writer.close();
-    }
-
-    catch (std::ifstream::failure e) {
+    } catch (std::ifstream::failure e) {
         std::cout << "Exception reading/writing to file";
     }
-
 }
 
 double HuffmanEncoder::getCompressionDegree(){
@@ -133,6 +143,40 @@ void HuffmanEncoder::decompress(){
         }
         
         reader.close();
+        writer.close();
+    }
+
+    catch (std::ifstream::failure e) {
+        std::cout << "Exception reading/writing to file";
+    }
+}
+
+void HuffmanEncoder::debugRegime(){
+    try {
+        std::ifstream firstReader(inputFile);
+
+        int* countOccurrences = new int[HuffmanTree::ENCODING_TABLE_SIZE];
+        for(int i = 0; i < HuffmanTree::ENCODING_TABLE_SIZE; i++){
+            countOccurrences[i] = 0;
+        }
+
+        findCountOfOccurrences(firstReader, countOccurrences);
+
+        HuffmanTree ht(countOccurrences);
+        std::vector<std::string> charEncodings = ht.getCharEncodings();
+
+        delete [] countOccurrences;
+        firstReader.close();
+
+        //rereading and writing to the file        
+        std::ifstream secondReader(inputFile);
+        std::ofstream writer(outputFile);
+
+        writer << ht.serialized() << std::endl;
+
+        writeCompressedData(secondReader, writer, charEncodings);
+
+        secondReader.close();
         writer.close();
     }
 

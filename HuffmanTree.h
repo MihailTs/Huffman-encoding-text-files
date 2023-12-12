@@ -15,8 +15,6 @@ class HuffmanTree {
 
         Node* root;
 
-        void printLeafes(Node*);
-
         void findEncodings(std::vector<std::string>&);
 
         void findEncodings(std::vector<std::string>&, Node*, std::string);
@@ -25,18 +23,27 @@ class HuffmanTree {
 
         void constructTree(std::vector<Node*>&);
 
+        void printLeafes(Node*);
+
         void serialized(Node*, std::string&);
+
+        void deserialized(Node*&, const std::string&, int&);
 
     public:
 
         static const int ENCODING_TABLE_SIZE = 128;
 
+        HuffmanTree();
         HuffmanTree(int*);
         // HuffmanTree(const HuffmanTree&);
 
         std::vector<std::string> getCharEncodings();
 
+        void deserialized(const std::string&);
+
         std::string serialized();
+
+
 
         // bool operator=(const HuffmanTree&);
         // void copy(const HuffmanTree&);

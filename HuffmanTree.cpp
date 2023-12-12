@@ -3,6 +3,10 @@
 #include <iostream>
 #include <algorithm>
 
+HuffmanTree::HuffmanTree(){
+    root = nullptr;
+}
+
 HuffmanTree::HuffmanTree(int* occurrenceCounts){
     std::vector<Node*> charValuePairs;
     for(int i = 0; i < ENCODING_TABLE_SIZE; i++){
@@ -98,13 +102,40 @@ void HuffmanTree::serialized(Node* nodeRoot, std::string& str){
     }
 
     if(nodeRoot->left == nullptr && nodeRoot->right == nullptr){
-        str = str + "'" + nodeRoot->symbol + " ";
+        str = str + "'" + nodeRoot->symbol;
     } else {
-        str = str + nodeRoot->symbol + " ";
+        str = str + nodeRoot->symbol;
     }
 
     serialized(nodeRoot->left, str);
     serialized(nodeRoot->right, str);
+}
+
+void HuffmanTree::deserialized(const std::string& treeDescription){
+    cleanup();
+    int current = 0;
+    deserialized(root, treeDescription, current);
+}
+
+void HuffmanTree::deserialized(Node*& nodeRoot, const std::string& treeDescription, int& curr){
+    if(treeDescription.size() == curr){
+        return;
+    }
+
+    if(treeDescription[curr] == '-'){
+        nodeRoot = new Node{'-', 0, new Node{'-', 0, nullptr, nullptr}, new Node{'-', 0, nullptr, nullptr}};
+        deserialized(nodeRoot->left, treeDescription, ++curr);
+        deserialized(nodeRoot->right, treeDescription, ++curr);
+    }
+
+    if(treeDescription[curr] == '\''){
+        curr++;
+        nodeRoot->symbol = treeDescription[curr];
+        nodeRoot->left = nullptr;
+        nodeRoot->right = nullptr;
+    }
+
+    return;
 }
 
 void HuffmanTree::cleanup(Node* nodeRoot){

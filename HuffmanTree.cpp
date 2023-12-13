@@ -3,6 +3,10 @@
 #include <iostream>
 #include <algorithm>
 
+HuffmanTree::HuffmanTree(){
+    root = nullptr;
+}
+
 HuffmanTree::HuffmanTree(int* occurrenceCounts){
     std::vector<Node*> charValuePairs;
     for(int i = 0; i < ENCODING_TABLE_SIZE; i++){
@@ -17,6 +21,10 @@ HuffmanTree::HuffmanTree(int* occurrenceCounts){
     constructTree(charValuePairs);
 }
 
+HuffmanTree::HuffmanTree(const HuffmanTree& other){
+    copy(other);
+}
+
 void HuffmanTree::constructTree(std::vector<Node*>& charValuePairs){
     if(charValuePairs.size() == 1){
         root = charValuePairs.at(0);
@@ -28,7 +36,7 @@ void HuffmanTree::constructTree(std::vector<Node*>& charValuePairs){
     Node* lowestPair2 = charValuePairs.back();
     charValuePairs.pop_back();
     
-    Node* newPair = new Node{' ', lowestPair1->value + lowestPair2->value, lowestPair1, lowestPair2};
+    Node* newPair = new Node{'-', lowestPair1->value + lowestPair2->value, lowestPair1, lowestPair2};
 
     if(newPair->value > charValuePairs.front()->value){
         charValuePairs.insert(charValuePairs.begin(), newPair);
@@ -86,17 +94,134 @@ void HuffmanTree::findEncodings(std::vector<std::string>& charEncodings, Node* n
     findEncodings(charEncodings, nodeRoot->right, currEncoding + "1");
 }
 
-void HuffmanTree::cleanup(Node* nodeRoot){
+//No information about the count of occurrences is kept because it won't be used
+std::string HuffmanTree::serialized(){
+    std::string serializationStr = "";
+    serialized(root, serializationStr);
+    return serializationStr;
+}
+
+void HuffmanTree::serialized(Node* nodeRoot, std::string& str){
+    if(nodeRoot == nullptr){
+        return;
+    }
+
     if(nodeRoot->left == nullptr && nodeRoot->right == nullptr){
-        delete nodeRoot;
-    } else{
+        str = str + "'" + nodeRoot->symbol;
+    } else {
+        str = str + nodeRoot->symbol;
+    }
+
+    serialized(nodeRoot->left, str);
+    serialized(nodeRoot->right, str);
+}
+
+//In deserialization the count of occurrences of symbols is not important so we set it to 0
+void HuffmanTree::deserialized(const std::string& treeDescription){
+    cleanup();
+    int current = 0;
+    deserialized(root, treeDescription, current);
+}
+
+void HuffmanTree::deserialized(Node*& nodeRoot, const std::string& treeDescription, int& curr){
+    if(treeDescription.size() == curr){
+        return;
+    }
+
+    if(treeDescription[curr] == '-'){
+        nodeRoot = new Node{'-', 0, new Node{'-', 0, nullptr, nullptr}, new Node{'-', 0, nullptr, nullptr}};
+        deserialized(nodeRoot->left, treeDescription, ++curr);
+        deserialized(nodeRoot->right, treeDescription, ++curr);
+    }
+
+    if(treeDescription[curr] == '\''){
+        curr++;
+        nodeRoot->symbol = treeDescription[curr];
+        nodeRoot->left = nullptr;
+        nodeRoot->right = nullptr;
+    }
+
+    return;
+}
+
+std::string HuffmanTree::decode(const std::string& line){
+    int currBit = 0;
+    std::string decoded = "";
+
+    Node* currNode = root;
+
+    while(currBit < line.size()){
+        if(currNode == nullptr){
+            throw std::runtime_error("A problem with the data decoding occured. The file may have been manipulated!");
+        }
+
+        if(currNode->left == nullptr && currNode->right == nullptr){
+            decoded += currNode->symbol;
+            currNode = root;
+        } else if(line[currBit] == '0'){
+            currNode = currNode->left;
+            currBit++;
+        } else if(line[currBit] == '1'){
+            currNode = currNode->right;
+            currBit++;
+        } else {
+            throw std::runtime_error("File data is represented in the wrong format or the file may have been corrupted!");
+        }
+
+    }
+
+    if(currNode->left == nullptr && currNode->right == nullptr){
+        decoded += currNode->symbol;
+        currNode = root;
+    } else {
+        throw std::runtime_error("File data is represented in the wrong format!");
+    }
+
+    return decoded;
+}
+
+void HuffmanTree::copy(const HuffmanTree& other){
+    if(this == &other){
+        return;
+    }
+
+    copy(other.root, root);
+}
+
+void HuffmanTree::copy(Node* otherRoot, Node*& myRoot){
+    if(otherRoot == nullptr){
+        return;
+    }
+
+    myRoot = new Node{otherRoot->symbol, otherRoot->value, nullptr, nullptr};
+    copy(otherRoot->left, myRoot->left);
+    copy(otherRoot->right, myRoot->right);
+}
+
+void HuffmanTree::cleanup(Node* nodeRoot){
+    if(nodeRoot->left != nullptr){
         cleanup(nodeRoot->left);
+    } 
+    if(nodeRoot->right != nullptr){
         cleanup(nodeRoot->right);
     }
+    delete nodeRoot;    
 }
 
 void HuffmanTree::cleanup(){
-    cleanup(root);
+    if(root != nullptr){
+        cleanup(root);
+    }
+}
+
+HuffmanTree& HuffmanTree::operator=(const HuffmanTree& other){
+    if(this == &other){
+        return *this;
+    }
+
+    cleanup();
+    copy(other);
+    return *this;
 }
 
 HuffmanTree::~HuffmanTree(){

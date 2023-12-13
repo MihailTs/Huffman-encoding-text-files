@@ -10,9 +10,12 @@ class HuffmanEncoder{
     private:
         std::string inputFile;
         std::string outputFile;
+        int inputBitSize;
+        int outputBitSize;
 
-        void findCountOccurrences(std::fstream, int*);
-    
+        void findCountOfOccurrences(std::ifstream&, int*);
+        void writeCompressedData(std::ifstream&, std::ofstream&, const std::vector<std::string>&);
+
     public:
 
         HuffmanEncoder();
@@ -21,7 +24,7 @@ class HuffmanEncoder{
 
         void setInputFile(std::string);
         void setOutputFile(std::string);
+        double getCompressionDegree();
         void compress();
         void decompress();
-
 };

@@ -15,6 +15,10 @@ class HuffmanEncoder{
 
         void findCountOfOccurrences(std::ifstream&, int*);
         void writeCompressedData(std::ifstream&, std::ofstream&, const std::vector<std::string>&);
+        void printDebugData(std::ifstream&, const std::vector<std::string>&);
+        void printDebugLine(const std::string&);
+        int binaryStringToInt(const std::string&);
+        std::string fillBinary(std::string, int);
 
     public:
 
@@ -27,4 +31,5 @@ class HuffmanEncoder{
         double getCompressionDegree();
         void compress();
         void decompress();
+        void debugRegime();
 };

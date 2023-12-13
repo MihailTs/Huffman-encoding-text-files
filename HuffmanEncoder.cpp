@@ -1,4 +1,5 @@
 #include "HuffmanEncoder.h"
+#include <math.h>
 
 HuffmanEncoder::HuffmanEncoder(){
     inputFile = "";
@@ -60,6 +61,67 @@ void HuffmanEncoder::writeCompressedData(std::ifstream& reader, std::ofstream& w
             outputBitSize += charEncodings.at((int) line[i]).size();
         }
     }                                                    
+}
+
+void HuffmanEncoder::printDebugData(std::ifstream& reader, 
+                                    const std::vector<std::string>& charEncodings){
+
+    std::string line;
+    std::string encodedLine = "";
+
+    while(std::getline(reader, line)){
+        encodedLine = "";
+        for(int i = 0; i < line.size(); i++){
+            encodedLine += charEncodings.at((int) line[i]);
+        }
+        printDebugLine(encodedLine);
+        std::cout << std::endl << std::endl;
+    }         
+
+}
+
+void HuffmanEncoder::printDebugLine(const std::string& encodedLine){
+
+    // std::string debugLine = "";
+
+    for(int i = 0; i < encodedLine.size(); i += 8){
+        if(encodedLine.size() - i <= 8){
+            // std::cout << encodedLine.substr(i);
+            std::cout << binaryStringToInt(fillBinary(encodedLine.substr(i), 8));
+        } else {
+            //std::cout << encodedLine.substr(i, 8);
+            std::cout << binaryStringToInt(encodedLine.substr(i, 8)) << " ";
+        }
+    }
+
+    // return debugLine;
+}
+
+//accepts a string representation of binary number and a number of digits
+//and returns a the binary number with the given number of digits
+//and zeroes at the end
+std::string HuffmanEncoder::fillBinary(std::string binary, int cntDigits){
+    if(binary.size() > cntDigits){
+        throw std::runtime_error("The given string is longer than the given number of digits");
+    }
+
+    while(binary.size() < cntDigits){
+        binary += '0';
+    }
+
+    return binary;
+}
+
+int HuffmanEncoder::binaryStringToInt(const std::string& bin){
+    int val = 0;
+
+    for(int i = bin.size() - 1; i >= 0; i--){
+        if(bin[i] == '1'){
+            val += std::pow(2, bin.size() - 1 - i);
+        }
+    }
+
+    return val;
 }
 
 void HuffmanEncoder::compress(){
@@ -170,14 +232,10 @@ void HuffmanEncoder::debugRegime(){
 
         //rereading and writing to the file        
         std::ifstream secondReader(inputFile);
-        std::ofstream writer(outputFile);
-
-        writer << ht.serialized() << std::endl;
-
-        writeCompressedData(secondReader, writer, charEncodings);
+        
+        printDebugData(secondReader, charEncodings);
 
         secondReader.close();
-        writer.close();
     }
 
     catch (std::ifstream::failure e) {

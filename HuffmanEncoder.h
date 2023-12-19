@@ -28,6 +28,9 @@ class HuffmanEncoder{
 
         void setInputFile(std::string);
         void setOutputFile(std::string);
+        std::string getInputFile();
+        std::string getOutputFile();
+
         double getCompressionDegree();
         void compress();
         void decompress();

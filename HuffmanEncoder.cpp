@@ -32,6 +32,14 @@ void HuffmanEncoder::setOutputFile(std::string _outputFile){
     outputBitSize = 0;
 }
 
+std::string HuffmanEncoder::getInputFile(){
+    return inputFile;
+}
+
+std::string HuffmanEncoder::outputFile(){
+    return outputFile;
+}
+
 void HuffmanEncoder::findCountOfOccurrences(std::ifstream& reader, int* countOccurrences){
     std::string line;
     while(std::getline(reader, line)){
@@ -75,26 +83,19 @@ void HuffmanEncoder::printDebugData(std::ifstream& reader,
             encodedLine += charEncodings.at((int) line[i]);
         }
         printDebugLine(encodedLine);
-        std::cout << std::endl << std::endl;
+        std::cout << std::endl;
     }         
 
 }
 
 void HuffmanEncoder::printDebugLine(const std::string& encodedLine){
-
-    // std::string debugLine = "";
-
     for(int i = 0; i < encodedLine.size(); i += 8){
         if(encodedLine.size() - i <= 8){
-            // std::cout << encodedLine.substr(i);
             std::cout << binaryStringToInt(fillBinary(encodedLine.substr(i), 8));
         } else {
-            //std::cout << encodedLine.substr(i, 8);
             std::cout << binaryStringToInt(encodedLine.substr(i, 8)) << " ";
         }
     }
-
-    // return debugLine;
 }
 
 //accepts a string representation of binary number and a number of digits

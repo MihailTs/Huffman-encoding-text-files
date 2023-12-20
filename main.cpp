@@ -1,10 +1,11 @@
 #include <iostream>
 #include "CommandProcessing.h"
 #include "HuffmanEncoder.h"
+#include "NoFileSpecifiedException.h"
 
 int main(){
 
-    HuffmanEncoder encoder("testInputFile.txt", "testOutputFile.txt");
+    HuffmanEncoder encoder;
     
     std::string command;
 
@@ -15,9 +16,17 @@ int main(){
         command = strip(command);
 
         if(command == "c"){
-            encoder.compress();
+            try{
+                encoder.compress();
+            } catch(NoFileSpecifiedException e){
+                std::cout << e.what() << std::endl;
+            }
         } else if(command == "d"){
-            encoder.decompress();
+            try{
+                encoder.decompress();
+            } catch(NoFileSpecifiedException e){
+                std::cout << e.what() << std::endl;
+            }
         } else if(command.substr(0, 2) == "i "){
             encoder.setInputFile(command.substr(2));
         } else if(command.substr(0, 2) == "o "){
@@ -30,7 +39,10 @@ int main(){
         } else if(command == "exit"){
             std::cout << "Bye!";
             break;
+        } else {
+            std::cout << "Illegal command!" << std::endl;
         }
+
 
     }
 

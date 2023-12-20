@@ -1,5 +1,6 @@
 #include "HuffmanEncoder.h"
 #include <math.h>
+#include "NoFileSpecifiedException.h"
 
 HuffmanEncoder::HuffmanEncoder(){
     inputFile = "";
@@ -10,6 +11,7 @@ HuffmanEncoder::HuffmanEncoder(){
 
 HuffmanEncoder::HuffmanEncoder(std::string _inputFile){
     inputFile = _inputFile;
+    outputFile = "";
     inputBitSize = 0;
     outputBitSize = 0;
 }
@@ -36,7 +38,7 @@ std::string HuffmanEncoder::getInputFile(){
     return inputFile;
 }
 
-std::string HuffmanEncoder::outputFile(){
+std::string HuffmanEncoder::getOutputFile(){
     return outputFile;
 }
 
@@ -126,6 +128,10 @@ int HuffmanEncoder::binaryStringToInt(const std::string& bin){
 }
 
 void HuffmanEncoder::compress(){
+    if(inputFile == "" || outputFile == ""){
+        throw NoFileSpecifiedException();
+    }
+
     try {
         std::ifstream firstReader(inputFile);
         std::ofstream writer(outputFile);
@@ -167,7 +173,7 @@ void HuffmanEncoder::compress(){
         secondReader.close();
         writer.close();
     } catch (std::ifstream::failure e) {
-        std::cout << "Exception reading/writing to file";
+        std::cout << "Exception occurred while reading/writing to file";
     }
 }
 
@@ -180,6 +186,10 @@ double HuffmanEncoder::getCompressionDegree(){
 
 // decompresses the inputFile to the outputFile
 void HuffmanEncoder::decompress(){
+    if(inputFile == "" || outputFile == ""){
+        throw NoFileSpecifiedException();
+    }
+
     try {
         std::ifstream reader(inputFile);
         std::ofstream writer(outputFile);

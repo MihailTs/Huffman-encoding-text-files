@@ -3,3 +3,38 @@
 #include <vector>
 #include <string>
 #include "../HuffmanEncoder.h"
+
+TEST_CASE("TestCompressNonEmptyFile"){
+    HuffmanEncoder encoder("testInputFile.txt", "testOutputFile.txt");
+    encoder.compress();
+
+    std::string lines[5];
+    std::ifstream reader("testOutputFile.txt");
+
+    std::string line;
+    int lineCounter = 0;
+    while(std::getline(reader, line)){
+        lines[lineCounter] = line;
+        lineCounter++;
+    }
+
+    CHECK(lines[0] == "-----'g-'I'l'n'h--'o's----'p'T-'u'F'y--','--'''v---'i--'b'w'r-'a--'m'f'd--'t'e' ");
+    CHECK(lines[1] == "1010001001111100111101011100101100101111011010000100111110");
+    CHECK(lines[2] == "10110101111101010000111010011111001001111011110001011100101110100011010110001111110011100001000111011100100110011010010101111100010111011001100");
+    CHECK(lines[3] == "11001011001111100110001100001100111101011101001011011011000010011110011101001101011001111010111010010001100000110111110100010111110011011100011011111100111010011011111011011100101001101000001111100110101101000101010010010111000111010010001111011100100010001111");
+    CHECK(lines[4] == "0110111110011001100000011111101011111000101111010111110111000110100101000110111000010111001100101010010000110010111010101110010010101010111");
+}
+
+TEST_CASE("TestCompressEmptyFile"){
+
+}
+
+TEST_CASE("TestDecompressNonEmptyFile"){
+
+
+}
+
+TEST_CASE("TestDecompressEmptyFile"){
+
+
+}

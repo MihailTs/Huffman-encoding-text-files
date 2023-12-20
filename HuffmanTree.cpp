@@ -16,7 +16,11 @@ HuffmanTree::HuffmanTree(int* occurrenceCounts){
     }
 
     std::sort(charValuePairs.begin(), charValuePairs.end(), 
-                [](Node* first, Node* second) -> bool {return first->value > second->value;});
+                [](Node* first, Node* second) -> bool {
+                    if(first->value > second->value) return true;
+                    if(first->value < second->value) return false;
+                    return first->symbol > second->symbol;
+                    });
 
     constructTree(charValuePairs);
 }

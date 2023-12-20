@@ -1,0 +1,4 @@
+testFile.txt
+*.exe
+*.o
+*.obj

@@ -49,7 +49,9 @@ void HuffmanEncoder::findCountOfOccurrences(std::ifstream& reader, int* countOcc
             countOccurrences[(int) line[i]]++;
             inputBitSize += 8;
         }
+        countOccurrences[10]++;
     }
+    countOccurrences[10]--;
 }
 
 void HuffmanEncoder::writeCompressedData(std::ifstream& reader, std::ofstream& writer, 
@@ -64,8 +66,10 @@ void HuffmanEncoder::writeCompressedData(std::ifstream& reader, std::ofstream& w
         }
     }
 
+    //compressed data is being written on one line
     while(std::getline(reader, line)){
-        writer << std::endl;
+        //this is the encoding for the new line charecter
+        writer << charEncodings.at(10);
         for(int i = 0; i < line.size(); i++){
             writer << charEncodings.at((int) line[i]);
             outputBitSize += charEncodings.at((int) line[i]).size();
@@ -85,7 +89,8 @@ void HuffmanEncoder::printDebugData(std::ifstream& reader,
             encodedLine += charEncodings.at((int) line[i]);
         }
         printDebugLine(encodedLine);
-        std::cout << std::endl;
+        //debug data on one line
+        //std::cout << std::endl;
     }         
 
 }
@@ -237,19 +242,15 @@ void HuffmanEncoder::debugRegime(){
 
         HuffmanTree ht(countOccurrences);
         std::vector<std::string> charEncodings = ht.getCharEncodings();
-
         delete [] countOccurrences;
         firstReader.close();
 
         //rereading and writing to the file        
         std::ifstream secondReader(inputFile);
-        
         printDebugData(secondReader, charEncodings);
 
         secondReader.close();
-    }
-
-    catch (std::ifstream::failure e) {
+    } catch (std::ifstream::failure e) {
         std::cout << "Exception reading/writing to file";
     }
 }

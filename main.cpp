@@ -33,6 +33,7 @@ int main(){
             encoder.setOutputFile(command.substr(2));
         } else if(command == "debug"){
             encoder.debugRegime();
+            std::cout << std::endl;
         } else if(command == "info"){
             std::cout << "The last compression had " << encoder.getCompressionDegree()
                             << " efficiency. (input bits / output bits ratio)" << std::endl;

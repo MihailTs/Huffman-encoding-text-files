@@ -111,7 +111,11 @@ void HuffmanTree::serialized(Node* nodeRoot, std::string& str){
     }
 
     if(nodeRoot->left == nullptr && nodeRoot->right == nullptr){
-        str = str + "'" + nodeRoot->symbol;
+        if(nodeRoot->symbol == '\n') {
+            str = str + "'" + "\\n";
+        } else {
+            str = str + "'" + nodeRoot->symbol;
+        }
     } else {
         str = str + nodeRoot->symbol;
     }
@@ -140,7 +144,12 @@ void HuffmanTree::deserialized(Node*& nodeRoot, const std::string& treeDescripti
 
     if(treeDescription[curr] == '\''){
         curr++;
-        nodeRoot->symbol = treeDescription[curr];
+        if(treeDescription[curr] == '\\' && treeDescription[curr+1] == 'n'){
+            nodeRoot->symbol = '\n';
+            curr++;
+        } else {
+            nodeRoot->symbol = treeDescription[curr];
+        }
         nodeRoot->left = nullptr;
         nodeRoot->right = nullptr;
     }
@@ -151,7 +160,6 @@ void HuffmanTree::deserialized(Node*& nodeRoot, const std::string& treeDescripti
 std::string HuffmanTree::decode(const std::string& line){
     int currBit = 0;
     std::string decoded = "";
-
     Node* currNode = root;
 
     while(currBit < line.size()){

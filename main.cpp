@@ -22,12 +22,14 @@ int main(){
         try{
             invoker.setCommand(command);
             if(invoker.getCommand() == nullptr) {
-                std::cout << "Illegal command! Check the manual for the right syntax for your command." << std::endl;
+                std::cout << "Illegal command! Check the manual for the right syntax for your command. (Ask \"help?\")" << std::endl;
             } else {
                 invoker.getCommand()->execute();
             }
+        } catch(NoFileSpecifiedException e){
+            std::cout << "You must first specify the input and output files." << std::endl;
         } catch(std::exception& e){
-            std::cout << e.what() << " Check the manual for the right syntax for your command." << std::endl;
+            std::cout << "Check the manual for the right syntax for your command. (Ask \"help?\")" << std::endl;
         }
     }
 

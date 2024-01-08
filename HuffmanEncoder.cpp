@@ -230,6 +230,10 @@ void HuffmanEncoder::decompress(){
 }
 
 void HuffmanEncoder::debugRegime(){
+    if(inputFile == ""){
+        throw NoFileSpecifiedException();
+    }
+
     try {
         std::ifstream firstReader(inputFile);
 

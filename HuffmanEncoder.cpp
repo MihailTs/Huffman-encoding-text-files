@@ -98,7 +98,7 @@ void HuffmanEncoder::printDebugData(std::ifstream& reader,
 void HuffmanEncoder::printDebugLine(const std::string& encodedLine){
     for(int i = 0; i < encodedLine.size(); i += 8){
         if(encodedLine.size() - i <= 8){
-            std::cout << binaryStringToInt(fillBinary(encodedLine.substr(i), 8));
+            std::cout << binaryStringToInt(fillBinary(encodedLine.substr(i), 8)) << " ";
         } else {
             std::cout << binaryStringToInt(encodedLine.substr(i, 8)) << " ";
         }
@@ -245,7 +245,7 @@ void HuffmanEncoder::debugRegime(){
         delete [] countOccurrences;
         firstReader.close();
 
-        //rereading and writing to the file        
+        //rereading and writing to the console    
         std::ifstream secondReader(inputFile);
         printDebugData(secondReader, charEncodings);
 

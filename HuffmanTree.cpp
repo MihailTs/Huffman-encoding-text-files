@@ -19,7 +19,7 @@ HuffmanTree::HuffmanTree(int* occurrenceCounts){
                 [](Node* first, Node* second) -> bool {
                     if(first->value > second->value) return true;
                     if(first->value < second->value) return false;
-                    return first->symbol > second->symbol;
+                    return first->symbol < second->symbol;
                     });
 
     constructTree(charValuePairs);

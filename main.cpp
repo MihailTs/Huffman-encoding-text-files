@@ -1,51 +1,36 @@
 #include <iostream>
-#include "CommandProcessing.h"
 #include "HuffmanEncoder.h"
 #include "NoFileSpecifiedException.h"
+#include "Invoker.h"
 
 int main(){
 
-    HuffmanEncoder encoder;
-    
-    std::string command;
+    HuffmanEncoder* encoder = new HuffmanEncoder();
+    Invoker invoker(encoder);
+
+    std::cout << "Huffman encoding!\n";
 
     while(true){
         std::cout << "> ";
+
+        std::string command;
         std::getline(std::cin, command);
 
-        command = strip(command);
+        if(command == "") {continue;}
 
-        if(command == "c"){
-            try{
-                encoder.compress();
-            } catch(NoFileSpecifiedException e){
-                std::cout << e.what() << std::endl;
+        //създаване и изпълнение на командата
+        try{
+            invoker.setCommand(command);
+            if(invoker.getCommand() == nullptr) {
+                std::cout << "Illegal command! Check the manual for the right syntax for your command." << std::endl;
+            } else {
+                invoker.getCommand()->execute();
             }
-        } else if(command == "d"){
-            try{
-                encoder.decompress();
-            } catch(NoFileSpecifiedException e){
-                std::cout << e.what() << std::endl;
-            }
-        } else if(command.substr(0, 2) == "i "){
-            encoder.setInputFile(command.substr(2));
-        } else if(command.substr(0, 2) == "o "){
-            encoder.setOutputFile(command.substr(2));
-        } else if(command == "debug"){
-            encoder.debugRegime();
-            std::cout << std::endl;
-        } else if(command == "info"){
-            std::cout << "The last compression had " << encoder.getCompressionDegree()
-                            << " efficiency. (input bits / output bits ratio)" << std::endl;
-        } else if(command == "exit"){
-            std::cout << "Bye!";
-            break;
-        } else {
-            std::cout << "Illegal command!" << std::endl;
+        } catch(std::exception& e){
+            std::cout << e.what() << " Check the manual for the right syntax for your command." << std::endl;
         }
-
-
     }
 
+    delete encoder;
     return 0;
 }

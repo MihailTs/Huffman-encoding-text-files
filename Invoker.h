@@ -8,6 +8,7 @@
 #include "InputFileCommand.h"
 #include "OutputFileCommand.h"
 #include "DebugCommand.h"
+#include "PrintHelpCommand.h"
 
 class Invoker{
 

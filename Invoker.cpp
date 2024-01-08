@@ -36,6 +36,8 @@ Command* Invoker::factory(const std::string& strCommand){
         command = new DebugCommand(encoder);
     } else if(strCommand == "info"){
         command = new InfoCommand(encoder);
+    } else if(strCommand == "help?"){
+        command = new PrintHelpCommand();
     } else {
         command = nullptr;
     }

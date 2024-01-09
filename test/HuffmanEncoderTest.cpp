@@ -18,6 +18,8 @@ TEST_CASE("TestCompressNonEmptyFile"){
         lineCounter++;
     }
 
+    reader.close();
+
     CHECK(lineCounter == 2);
     CHECK(lines[1] == "000110110001001001011100111110000110000000101101010111110011010001001001011100100111010011011110101100101011101011010011101111010000101000101111110000111011110111110110100101011101011111000000001011000101111101111101100011101110011101101010111100111010011011110101100111100110100010010110110111111000111000011111111010000010111111110010001001011011011111101101001101111100001110111101111110100111011111000011010110011111000011000000010110101011110011010000100110111101001011011101000001000111101100010100000110011000110011100011000011101111011111101001110111110000110101100111110000110000000101101010111100110100001001101111010010110111010000010001111011000101000001100110001");
 }
@@ -34,6 +36,7 @@ TEST_CASE("TestCompressEmptyFile"){
         lineCounter++;
     }
 
+    reader.close();
     CHECK(line.empty());
     CHECK(lineCounter == 0);
 }
@@ -51,6 +54,8 @@ TEST_CASE("TestDecompressNonEmptyFile"){
         lines[lineCounter] = line;
         lineCounter++;
     }
+
+    reader.close();
 
     CHECK(lineCounter == 4);
     CHECK(lines[0] == "First things first");
@@ -71,6 +76,7 @@ TEST_CASE("TestDecompressEmptyFile"){
         lineCounter++;
     }
 
+    reader.close();
     CHECK(line.empty());
     CHECK(lineCounter == 0);
 }
@@ -88,6 +94,8 @@ TEST_CASE("TestCompressDecompress"){
         originalLines.push_back(line);
     }
 
+    firstReader.close();
+
     he.setInputFile("testOutputFile.txt");
     he.setOutputFile("testInputFile.txt");
     he.decompress();
@@ -99,5 +107,6 @@ TEST_CASE("TestCompressDecompress"){
         decompressedLines.push_back(line);
     }
 
+    secondReader.close();
     CHECK(originalLines == decompressedLines);
 }

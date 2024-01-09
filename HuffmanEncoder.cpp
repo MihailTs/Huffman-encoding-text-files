@@ -1,6 +1,7 @@
 #include "HuffmanEncoder.h"
 #include <math.h>
 #include "NoFileSpecifiedException.h"
+#include "IllegalCharecterException.h"
 
 HuffmanEncoder::HuffmanEncoder(){
     inputFile = "";
@@ -46,12 +47,17 @@ void HuffmanEncoder::findCountOfOccurrences(std::ifstream& reader, int* countOcc
     std::string line;
     while(std::getline(reader, line)){
         for(int i = 0; i < line.size(); i++){
+            if((int) line[i] < 0 || (int) line[i] > 127){
+                throw IllegalCharercterException();
+            }
             countOccurrences[(int) line[i]]++;
             inputBitSize += 8;
         }
         countOccurrences[10]++;
     }
-    countOccurrences[10]--;
+    if(countOccurrences[10] > 0) {
+        countOccurrences[10]--;
+    }
 }
 
 void HuffmanEncoder::writeCompressedData(std::ifstream& reader, std::ofstream& writer, 
@@ -246,6 +252,7 @@ void HuffmanEncoder::debugRegime(){
 
         HuffmanTree ht(countOccurrences);
         std::vector<std::string> charEncodings = ht.getCharEncodings();
+
         delete [] countOccurrences;
         firstReader.close();
 

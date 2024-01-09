@@ -74,3 +74,30 @@ TEST_CASE("TestDecompressEmptyFile"){
     CHECK(line.empty());
     CHECK(lineCounter == 0);
 }
+
+TEST_CASE("TestCompressDecompress"){
+    HuffmanEncoder he("testInputFile.txt", "testOutputFile.txt");
+    he.compress();
+
+    std::vector<std::string> originalLines;
+
+    std::ifstream firstReader("testEmptyInputFile.txt");
+
+    std::string line;
+    while(std::getline(firstReader, line)){
+        originalLines.push_back(line);
+    }
+
+    he.setInputFile("testOutputFile.txt");
+    he.setOutputFile("testInputFile.txt");
+    he.decompress();
+
+    std::ifstream secondReader("testEmptyInputFile.txt");
+    std::vector<std::string> decompressedLines;
+
+    while(std::getline(secondReader, line)){
+        decompressedLines.push_back(line);
+    }
+
+    CHECK(originalLines == decompressedLines);
+}

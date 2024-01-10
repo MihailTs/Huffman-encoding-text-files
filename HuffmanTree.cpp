@@ -111,6 +111,7 @@ void HuffmanTree::serialized(Node* nodeRoot, std::string& str){
     }
 
     if(nodeRoot->left == nullptr && nodeRoot->right == nullptr){
+        //special case '\n' - to avoid escape sequence
         if(nodeRoot->symbol == '\n') {
             str = str + "'" + "\\n";
         } else {
@@ -136,6 +137,7 @@ void HuffmanTree::deserialized(Node*& nodeRoot, const std::string& treeDescripti
         return;
     }
 
+    //creating the nodes a constructing
     if(treeDescription[curr] == '-'){
         nodeRoot = new Node{'-', 0, new Node{'-', 0, nullptr, nullptr}, new Node{'-', 0, nullptr, nullptr}};
         deserialized(nodeRoot->left, treeDescription, ++curr);
@@ -162,6 +164,7 @@ std::string HuffmanTree::decode(const std::string& line){
     std::string decoded = "";
     Node* currNode = root;
 
+    //traversing the tree depending on the symbol: 0 - left, 1 - right
     while(currBit < line.size()){
         if(currNode == nullptr){
             throw std::runtime_error("A problem with the data decoding occured. The file may have been manipulated!");

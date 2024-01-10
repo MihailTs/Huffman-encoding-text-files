@@ -111,9 +111,6 @@ void HuffmanEncoder::printDebugLine(const std::string& encodedLine){
     }
 }
 
-//accepts a string representation of binary number and a number of digits
-//and returns a the binary number with the given number of digits
-//and zeroes at the end
 std::string HuffmanEncoder::fillBinary(std::string binary, int cntDigits){
     if(binary.size() > cntDigits){
         throw std::runtime_error("The given string is longer than the given number of digits");

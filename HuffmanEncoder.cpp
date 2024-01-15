@@ -181,7 +181,7 @@ void HuffmanEncoder::compress(){
         secondReader.close();
         writer.close();
     } catch (std::ifstream::failure e) {
-        std::cout << "Exception occurred while reading/writing to file";
+        std::cout << "Exception occurred while reading/writing to file" << std::endl;
     }
 }
 
@@ -205,8 +205,12 @@ void HuffmanEncoder::decompress(){
         std::string line;
         
         //at first line contains the incoding info
+        //If the decompressed file is empty - the output is an empty file 
         if(!std::getline(reader, line)){
-            throw std::runtime_error("The given file is empty. Unable to decompress an empty file!");
+            //throw std::runtime_error("The given file is empty. Unable to decompress an empty file!");
+            reader.close();
+            writer.close();
+            return;
         }
 
         HuffmanTree ht;
@@ -228,7 +232,7 @@ void HuffmanEncoder::decompress(){
     }
 
     catch (std::ifstream::failure e) {
-        std::cout << "Exception reading/writing to file";
+        std::cout << "Exception reading/writing to file" << std::endl;
     }
 }
 
